@@ -1,0 +1,17 @@
+{
+  "name": "projectOne",
+  "version": "0.0.0",
+  "authors": [
+    "artbychenko <artbychenko@gmail.com>"
+  ],
+  "description": "load susy to project",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "susy": "~2.2.5",
+    "breakpoint-sass": "~2.6.1",
+    "normalize-scss": "~3.0.3"
+  }
+}
