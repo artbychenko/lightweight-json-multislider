@@ -1,5 +1,5 @@
-var app = require('app/app');
-var AppRouter = require('app/routers/AppRouter');
+var app = require(app/app);
+//var appRouter = require(app/routers/appRouter);
 
-app.appRouter = new AppRouter();
-app.start();
+//app.appRouter =  new appRouter();
+//app.start();

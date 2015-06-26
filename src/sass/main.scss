@@ -1,29 +1,299 @@
 @import "../../bower_components/normalize-scss/normalize";
-@import "../../bower_components/susy/sass/susy";
+// @import "../../bower_components/susy/sass/susy";
 @import "../../bower_components/breakpoint-sass/stylesheets/breakpoint";
 
-$susy: (
-  columns: 12, 
-  container: 1140px,
-  gutters: 0.25,
-  global-box-sizing: border-box,
-  debug: (image: show-columns)
-  );
 
-.testing {
-  @include span(12);
+$menu-transform: 300px 470px;
+$big-block-transform: 300px 719px;
+$minimal: 300px 370px;
+
+$four-col: 1420px;
+$three-col: 1060px 1419px;
+$two-col: 720px 1059px;
+$one-col: 300px 719px;
+
+@mixin clearfix {
+    content: " ";
+    display: block;
+    clear: both;
 }
 
-.testing2 {
-  @include span(2);
-  margin-left: span(4);
+@font-face {
+  font-family: NewBaskervilleC, serif;
+  src: url(../images/font/NewBaskervilleC.ttf);
 }
 
-.testing3 {
-  @include span(2);
-  margin-left: span(6);
-  @include breakpoint(20em) {
-    @include span(4); 
-    margin-left: span(3);
+@font-face {
+  font-family: PT_Sans-Web-Regular, monospace;
+  src: url(../images/font/PT_Sans-Web-Regular.ttf);
+}
+
+html {
+  font-family: PT_Sans-Web-Regular, monospace;
+}
+
+section.main_page {
+  min-width: 320px;
+  overflow: hidden;
+}
+
+
+/* header start ---------------------------------------------------------------> */
+
+header.main_page:after {
+  @include clearfix;
+}
+
+.header_logo {
+  height: 80px;
+  background: #282a2d;
+  color: #676b71;
+  &:hover{                    // заменить поведение hover на сам логотип через js
+    background: #22539d;
+    color: #6387bd;
+  }
+  &:after {
+    @include clearfix;
+  }
+  & .logo_img {
+    width: 40px;
+    margin: 12px 0 0 9.4%;
+    @include breakpoint($four-col) {
+      margin-left: 90px;
+    }
+    float: left;
+    & img{
+      width: 100%;
+    }
+  }
+  & .logo_title{
+    overflow: hidden;
+    float: left;
+    margin: 18px 0 0 20px;
+    & strong {
+      display: block;
+      color: #ffffff;
+      font-family: NewBaskervilleC, serif;
+      font-size: 32px;
+      line-height: 32px;
+      font-weight: normal;
+    }
+    & em {
+      display: block;
+      font-size: 11px;
+      line-height: 11px;
+      font-style: normal;
+      letter-spacing: -1px;
+      word-spacing: -1px;
+    }
   }
 }
+
+.header_nav {
+  height: 100px;
+  margin: 0;
+  padding: 0;
+  @include breakpoint($menu-transform) {
+    height: 40px;
+  }
+  & ul {
+    margin: 0 0 0 9.4%;
+    @include breakpoint($four-col) {
+      margin-left: 90px;
+    }
+    padding: 0;
+    & li {
+      list-style: none;
+      display: block;
+      float: left;
+      margin-right: 22px;
+      margin-top: 64px;
+      @include breakpoint($menu-transform) {
+        margin-top: 5px;
+        margin-right: 4%;
+      }
+      &:first-child{
+        @include breakpoint($menu-transform) {
+          width: 100%;
+        }
+      }
+      & a{
+        display: block;
+        float: left;
+        text-decoration: none;
+        font-family: Arial, monospace;
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #676b71;
+        height: 14px;
+        &:hover{
+          color: #000000;
+          font-weight: bold;
+        }
+        &:active{
+          color: #000000;
+          font-weight: bold;
+          height: 13px;
+          border-bottom: 1px solid black;
+        }
+      }
+    }
+  }
+}
+
+/* <-- header end */
+
+
+/* base content ---------------------------------------------------------------> */
+
+div.side_watch{
+  margin-left: 9.4%;
+  @include breakpoint($four-col) {
+    margin-left: 90px;
+  }
+  overflow: hidden;
+  @include breakpoint($four-col){
+    width: 1260px;
+  }
+  @include breakpoint($three-col){
+    width: 940px;
+  }
+  @include breakpoint($two-col){
+    width: 620px;
+  }
+  @include breakpoint($one-col){
+    width: 300px;
+  }
+  @include breakpoint($minimal){
+    margin-left: 2%;
+  }
+}
+
+section.images_container {
+  overflow: hidden;
+  @include clearfix;
+}
+
+article.countries {
+  position: relative;
+  float: right;
+  margin-bottom: 20px;
+  background: #282a2d;
+  width: 620px;
+  height: 420px;
+  line-height: 420px;
+  text-align: center;
+  @include breakpoint($big_block_transform){
+    width: 300px;
+    height: 200px;
+    line-height: 200px;
+  }
+  & h1 {
+    display: inline-block;
+    vertical-align: middle;
+    font: 36px NewBaskervilleC, serif;
+    text-transform: capitalize;
+    color: #ffffff;
+  }
+
+}
+
+article.country {
+  position: relative;
+  float: right;
+  margin-bottom: 20px;
+  background: #282a2d;
+  width: 300px;
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+  @include breakpoint($three-col) {
+    margin-right: 20px;
+  }
+  @include breakpoint($four-col) {
+    margin-right: 20px;
+  }
+  &:nth-child(2n) {
+    @include breakpoint($two-col) {
+      margin-left: 20px;
+    }
+  }
+  &:nth-child(3n+4) {
+    @include breakpoint($three-col) {
+      margin-right: 0;
+    }
+  }
+  &:nth-child(4n+6) {
+    @include breakpoint($four-col) {
+      margin-right: 0;
+    }
+  }
+  & h1 {
+    display: inline-block;
+    vertical-align: middle;
+    font: 36px NewBaskervilleC, serif;
+    text-transform: capitalize;
+    color: #ffffff;
+  }
+}
+/* <-- base content end */
+
+/* main image gallery --> */
+
+
+/* <-- main image gallery end */
+
+
+/* footer ----------------------------------------------------------------------> */
+
+footer.main_page {
+  height: 60px;
+  background: #282a2d;
+  margin-top: 60px;
+  & .footer_logo {
+    margin-left: 9.4%;
+    @include breakpoint($four-col) {
+      margin-left: 90px;
+    }
+    line-height: 60px;
+    color: #676b71;
+    & .footer_year {
+      font: 16px NewBaskervilleC, serif;
+    }
+    & .logo_title {
+      float: right;
+      margin-right: 9.4%;
+      @include breakpoint($four-col) {
+        margin-right: 90px;
+      }
+      overflow: hidden;
+      font-size: 14px;
+      & span {
+        display: inline-block;
+        word-spacing: -3px;
+        &:first-letter {
+          text-transform: uppercase;
+        }
+        @include breakpoint($menu-transform) {
+          display: none;
+        }
+      }
+      & strong {
+        text-transform: capitalize;
+        font-weight: normal;
+        color: #aeb2b7;
+      }
+      & .logo_img {
+        width: 30px;
+        display: inline-block;
+        & img{
+          width: 100%;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+}
+
+/* <-- footer end */

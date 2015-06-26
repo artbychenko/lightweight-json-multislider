@@ -29,7 +29,7 @@ module.exports = {
     },
     staticAssets: {
         src: src + '/static-assets/**',
-        dest: dest
+        dest: dest + '/js'
     },
     markup: {
         src: src + '/html/*.html',
@@ -45,9 +45,9 @@ module.exports = {
             dest: dest + '/js',
             outputName: 'main.js',
             // Additional file extentions to make optional
-            extensions: ['.coffee', '.js', '.hbs'],
+            extensions: ['.js', '.hbs']
             // list of modules to make require-able externally
-            //require: ['some-module', 'another-module']
+            // require: ['jquery', 'backbone']
         }]
     },
     production: {
