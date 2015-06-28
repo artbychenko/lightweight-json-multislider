@@ -48,24 +48,24 @@ header.main_page:after {
   height: 80px;
   background: #282a2d;
   color: #676b71;
-  &:hover{                    // заменить поведение hover на сам логотип через js
-    background: #22539d;
-    color: #6387bd;
-  }
   &:after {
     @include clearfix;
   }
   & .logo_img {
     width: 40px;
-    margin: 12px 0 0 9.4%;
+    height: 80px;
+    margin-left: 9.4%;
     @include breakpoint($four-col) {
       margin-left: 90px;
     }
     float: left;
-    & img{
+    & .svg_img{
+      background: url("../images/svg/logo.svg") no-repeat;
       width: 100%;
+      height: 55px;
+      margin-top: 12px;
     }
-  }
+}
   & .logo_title{
     overflow: hidden;
     float: left;
@@ -170,33 +170,9 @@ div.side_watch{
   }
 }
 
-section.images_container {
+#images_container {
   overflow: hidden;
   @include clearfix;
-}
-
-article.countries {
-  position: relative;
-  float: right;
-  margin-bottom: 20px;
-  background: #282a2d;
-  width: 620px;
-  height: 420px;
-  line-height: 420px;
-  text-align: center;
-  @include breakpoint($big_block_transform){
-    width: 300px;
-    height: 200px;
-    line-height: 200px;
-  }
-  & h1 {
-    display: inline-block;
-    vertical-align: middle;
-    font: 36px NewBaskervilleC, serif;
-    text-transform: capitalize;
-    color: #ffffff;
-  }
-
 }
 
 article.country {
@@ -208,6 +184,7 @@ article.country {
   height: 200px;
   line-height: 200px;
   text-align: center;
+  overflow: hidden;
   @include breakpoint($three-col) {
     margin-right: 20px;
   }
@@ -219,8 +196,13 @@ article.country {
       margin-left: 20px;
     }
   }
-  &:nth-child(3n+4) {
+  &:nth-child(3n-2) {
     @include breakpoint($three-col) {
+      margin-right: 0;
+    }
+  }
+  &:first-child {
+    @include breakpoint($four-col) {
       margin-right: 0;
     }
   }
@@ -229,17 +211,184 @@ article.country {
       margin-right: 0;
     }
   }
-  & h1 {
-    display: inline-block;
-    vertical-align: middle;
-    font: 36px NewBaskervilleC, serif;
-    text-transform: capitalize;
-    color: #ffffff;
+}
+
+article.countries {
+  width: 620px;
+  height: 420px;
+  line-height: 420px;
+  @include breakpoint($big_block_transform){
+    width: 300px;
+    height: 200px;
+    line-height: 200px;
   }
 }
+
 /* <-- base content end */
 
-/* main image gallery --> */
+/* main image gallery ---------------------------------------------------------> */
+// .article > ( .gallery-bg > (.bg-id(n) + .gallery-title) ) + .bg-spinner
+
+.gallery-bg {
+  display: block;
+  margin:0;
+  padding:0;
+  width: 100%;
+  height: 100%;
+  font: 36px NewBaskervilleC, serif;
+  color: #ffffff;
+  background: #282a2d;
+  opacity: 0.7;
+  &  > div {
+    width: 100%;
+    height: 100%;
+    & .gallery-bg-img {
+      margin:0;
+      padding:0;
+      max-height: 100%;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.gallery-title {
+  position: relative;
+  margin-top: -200px;
+  height: 200px;
+  width: 300px;
+  text-align: left;
+}
+
+// resize for big tile
+.countries .gallery-title {
+  margin-top: -420px;
+  height: 420px;
+  width: 620px;
+  @include breakpoint($big_block_transform){
+    margin-top: -200px;
+    width: 300px;
+    height: 200px;
+  }
+}
+
+.gallery-title > span {
+  display: block;
+  opacity: 0;
+  position:absolute;
+  bottom: 15px;
+  left: 20px;
+  width: 60%;
+  color: #fdfdfd;
+  font: 24px NewBaskervilleC, serif;
+}
+
+.gallery-left-arrow {
+  background: url("../images/svg/prev_slide.svg") no-repeat;
+  opacity: 0.7;
+  position: absolute;
+  bottom: 20px;
+  right: 55px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 1;
+}
+.gallery-right-arrow {
+  background: url("../images/svg/next_slide.svg") no-repeat;
+  opacity: 0.7;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.gallery-left-arrow:hover,
+.gallery-right-arrow:hover,
+.gallery-left-arrow:active,
+.gallery-right-arrow:active,
+.gallery-left-arrow:focus,
+.gallery-right-arrow:focus{
+  opacity: 1;
+}
+
+/* spinner */
+.bg-spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 32px;
+  margin-left: -16px;
+  margin-top: -16px;
+  height: 32px;
+}
+.bg-spinner > span {
+  background: url("../images/svg/spin.svg") no-repeat;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.bg-spin {
+  -webkit-animation: spin 2s linear 0s infinite;
+  -moz-animation: spin 2s linear 0s infinite;
+  animation: spin 2s linear 0s infinite;
+}
+
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+    -moz-transform: rotate(359deg);
+    -ms-transform: rotate(359deg);
+    -o-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@-moz-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+    -moz-transform: rotate(359deg);
+    -ms-transform: rotate(359deg);
+    -o-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+    -moz-transform: rotate(359deg);
+    -ms-transform: rotate(359deg);
+    -o-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
 
 
 /* <-- main image gallery end */
@@ -263,33 +412,42 @@ footer.main_page {
     }
     & .logo_title {
       float: right;
+      height: 60px;
       margin-right: 9.4%;
+      overflow: hidden;
+      font-size: 14px;
       @include breakpoint($four-col) {
         margin-right: 90px;
       }
-      overflow: hidden;
-      font-size: 14px;
-      & span {
-        display: inline-block;
-        word-spacing: -3px;
-        &:first-letter {
-          text-transform: uppercase;
+      & .logo_name {
+        float: right;
+        height: 60px;
+        line-height: 60px;
+        margin-right: 15px;
+        & span {
+          word-spacing: -3px;
+          &:first-letter {
+            text-transform: uppercase;
+          }
+          @include breakpoint($menu-transform) {
+            display: none;
+          }
         }
-        @include breakpoint($menu-transform) {
-          display: none;
+        & strong {
+          text-transform: capitalize;
+          font-weight: normal;
+          color: #aeb2b7;
         }
-      }
-      & strong {
-        text-transform: capitalize;
-        font-weight: normal;
-        color: #aeb2b7;
       }
       & .logo_img {
+        float: right;
         width: 30px;
-        display: inline-block;
-        & img{
+        height: 60px;
+        margin-top: 10px;
+        & .svg_img{
+          background: url("../images/svg/cp_logo.svg") no-repeat;
           width: 100%;
-          vertical-align: middle;
+          height: 40px;
         }
       }
     }
