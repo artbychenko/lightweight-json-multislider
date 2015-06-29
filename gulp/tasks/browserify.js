@@ -27,7 +27,8 @@ var aliasify = require('aliasify').configure({
         'models': './app/models',
         'routers': './app/routers',
         'templates': './templates',
-        'views': './app/views'
+        'views': './app/views',
+        'images_links': '../images/images_links'
     },
     configDir: config.src + '/javascript'
 });
