@@ -186,7 +186,7 @@ Slider.prototype = {
                         var $img = $(' .gallery-bg-img', $new);
                         var imgWidth = $img.attr('data-width');
                         var imgHeight = $img.attr('data-height');
-                        if (imgWidth > 300 && imgHeight > 200) {
+                        if (imgWidth > $img.width() && imgHeight > $img.height()) {
                             $zoom.addClass('visible7');
                         } else {
                             $zoom.addClass('displayNot');
@@ -287,7 +287,7 @@ Slider.prototype = {
                         var $img = $(' .gallery-bg-img', $new);
                         var imgWidth = $img.attr('data-width');
                         var imgHeight = $img.attr('data-height');
-                        if (imgWidth > 300 && imgHeight > 200) {
+                        if (imgWidth > $img.width() && imgHeight > $img.height()) {
                             $zoom.addClass('visible7');
                         } else {
                             $zoom.addClass('displayNot');
