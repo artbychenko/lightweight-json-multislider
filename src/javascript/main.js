@@ -25,23 +25,18 @@ $(document).ready(function () {
 
 // add fade effect for tile images
 (function(){
-    $('.gallery-bg').hover(function(){
-        $(this).css({
-            opacity: 1
-        });
-        $('.gallery-title span', this).css({
-            opacity: 1
-        });
+    $('.gallery-bg').hover(function() {
+        $(this).addClass('visibleFull').removeClass('visible7');
+        $('.gallery-title .title-name', this).addClass('visibleFull').removeClass('visibleNot');
+        $('.gallery-zoom', this).addClass('visible7').removeClass('visibleNot');
+        $('.gallery-name', this).addClass('visibleNot').removeClass('visible');
     },function(){
-        $(this).css({
-            opacity: 0.7
-        });
-        $('.gallery-title span', this).css({
-            opacity: 0
-        });
+        $(this).addClass('visible7').removeClass('visibleFull');
+        $('.gallery-title .title-name', this).addClass('visibleNot').removeClass('visibleFull');
+        $('.gallery-zoom', this).addClass('visibleNot').removeClass('visible7');
+        $('.gallery-name', this).addClass('visible').removeClass('visibleNot');
     });
 }());
-
 
 // initialize tiles with countries, use constructor Slider
 (function (countries) {

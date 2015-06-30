@@ -235,7 +235,7 @@ article.countries {
   padding:0;
   width: 100%;
   height: 100%;
-  font: 36px NewBaskervilleC, serif;
+  font: 26px NewBaskervilleC, serif;
   color: #ffffff;
   background: #282a2d;
   opacity: 0.7;
@@ -260,6 +260,24 @@ article.countries {
   text-align: left;
 }
 
+.gallery-name {
+  font: 36px NewBaskervilleC, serif;
+  color: #ffffff;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  line-height: 200px;
+}
+
+// resize for big tile
+.countries .gallery-name {
+  line-height: 420px;
+  @include breakpoint($big_block_transform){
+    line-height: 200px;
+  }
+}
+
 // resize for big tile
 .countries .gallery-title {
   margin-top: -420px;
@@ -274,7 +292,6 @@ article.countries {
 
 .gallery-title > span {
   display: block;
-  opacity: 0;
   position:absolute;
   bottom: 15px;
   left: 20px;
@@ -294,6 +311,7 @@ article.countries {
   cursor: pointer;
   z-index: 1;
 }
+
 .gallery-right-arrow {
   background: url("../images/svg/next_slide.svg") no-repeat;
   opacity: 0.7;
@@ -306,12 +324,45 @@ article.countries {
   z-index: 1;
 }
 
+.gallery-zoom {
+  background: url("../images/svg/icon_zoom.svg") no-repeat;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -20px;
+  margin-top: -20px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.visible1 {
+  opacity: 0.1;
+}
+
+.visible7 {
+  opacity: 0.7;
+}
+
+.visibleFull {
+  opacity: 1;
+}
+
+.visibleNot {
+  opacity: 0;
+}
+
 .gallery-left-arrow:hover,
 .gallery-right-arrow:hover,
+.gallery-zoom:hover,
 .gallery-left-arrow:active,
 .gallery-right-arrow:active,
+.gallery-zoom:active,
 .gallery-left-arrow:focus,
-.gallery-right-arrow:focus{
+.gallery-right-arrow:focus
+.gallery-zoom:focus {
   opacity: 1;
 }
 

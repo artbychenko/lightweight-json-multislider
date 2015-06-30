@@ -13,6 +13,7 @@ function Slider(selector,bgDataArray) {
     this.arrayLoaded = [];
     this.index = 0;
     this.selector = selector;
+    this.country = selector.slice(1,2).toUpperCase()+selector.slice(2);
     var setupIndex = 0;
     var thumb;
     var length = 0;
@@ -53,18 +54,12 @@ Slider.prototype = {
             '" alt="' + cacheThis.arrayTitle[cacheThis.index] + '">' +
             '</div>';
         initialAppend += '<div class="gallery-title">' +
-        '<span>' + cacheThis.arrayTitle[cacheThis.index] + '</span>' +
+        '<span class="title-name visibleNot">' + cacheThis.arrayTitle[cacheThis.index] + '</span>' +
+        '<div class="gallery-name"><span class="name">'+this.country+'</span></div>'+
         '<div class="gallery-left-arrow"></div>' +
         '<div class="gallery-right-arrow"></div>'+
+        '<div class="gallery-zoom visibleNot"></div>'+
         '</div>';
-        /*   afterAppend += '<div id="gallery-show-all">' +
-         '<span class="icon-th"></span>' +
-         '</div>';
-         afterAppend += '<div id="bg-home">' +
-         '<a href="' + this.bgHomePage + '">' +
-         '<span class="icon-home"></span></a>' +
-         '</div>';
-         afterAppend += '<div id="all-img"></div>';*/
         var spinner = '<div class="bg-spinner">' +
             '<span class="icon-spinner bg-spin"></span>' +
             '</div>';
@@ -127,13 +122,16 @@ Slider.prototype = {
                 $new.hide();
                 var $old = $(that + ' .bg-id-' + currentIndex);
                 var $img = $(that + ' .bg-id-' + cacheThis.index).find('img');
+                var $zoom =$(that + ' .gallery-zoom');
 
                 var _pushLeft = function () {
-                    var spanElement = $(that + ' .gallery-title').find('span');
+                    var spanElement = $(that + ' .title-name');
                     spanElement.empty();
+                    $zoom.removeClass('visible7');
                     setTimeout(function () {
                         leftClick = false;
                         spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
+                        $zoom.addClass('visible7'); // добавить условие для показа
                     }, 600);
                     $old.hide();
                     $new.css({
@@ -190,13 +188,16 @@ Slider.prototype = {
                 $new.hide();
                 var $old = $(that + ' .bg-id-' + currentIndex);
                 var $img = $(that + ' .bg-id-' + cacheThis.index).find('img');
+                var $zoom =$(that + ' .gallery-zoom');
 
                 var _pushRight = function () {
-                    var spanElement = $(that + ' .gallery-title').find('span');
+                    var spanElement = $(that + ' .title-name');
                     spanElement.empty();
+                    $zoom.removeClass('visible7');
                     setTimeout(function () {
                         rightClick = false;
                         spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
+                        $zoom.addClass('visible7'); // добавить условие для показа
                     }, 500);
                     $old.hide();
                     $new.css({
