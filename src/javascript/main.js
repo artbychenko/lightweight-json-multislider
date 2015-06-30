@@ -29,12 +29,12 @@ $(document).ready(function () {
         $(this).addClass('visibleFull').removeClass('visible7');
         $('.gallery-title .title-name', this).addClass('visibleFull').removeClass('visibleNot');
         $('.gallery-zoom', this).addClass('visible7').removeClass('visibleNot');
-        $('.gallery-name', this).addClass('visibleNot').removeClass('visible');
+        $('.gallery-name', this.parentNode).addClass('displayNot').removeClass('displayBlock');
     },function(){
         $(this).addClass('visible7').removeClass('visibleFull');
         $('.gallery-title .title-name', this).addClass('visibleNot').removeClass('visibleFull');
         $('.gallery-zoom', this).addClass('visibleNot').removeClass('visible7');
-        $('.gallery-name', this).addClass('visible').removeClass('visibleNot');
+        $('.gallery-name', this.parentNode).addClass('displayBlock').removeClass('displayNot');
     });
 }());
 

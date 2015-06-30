@@ -55,16 +55,17 @@ Slider.prototype = {
             '</div>';
         initialAppend += '<div class="gallery-title">' +
         '<span class="title-name visibleNot">' + cacheThis.arrayTitle[cacheThis.index] + '</span>' +
-        '<div class="gallery-name"><span class="name">'+this.country+'</span></div>'+
         '<div class="gallery-left-arrow"></div>' +
         '<div class="gallery-right-arrow"></div>'+
         '<div class="gallery-zoom visibleNot"></div>'+
         '</div>';
+        var name = '<div class="gallery-name"><span class="name">'+this.country+'</span></div>';
         var spinner = '<div class="bg-spinner">' +
             '<span class="icon-spinner bg-spin"></span>' +
             '</div>';
         var $gallery = $(cacheThis.selector + ' .gallery-bg');
         $gallery.hide().append(initialAppend);
+        $body.append(name);
         $body.append(spinner);
         $gallery.find('img').on('load', function () {
             cacheThis.arrayLoaded[cacheThis.index] = true;
