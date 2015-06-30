@@ -11,6 +11,7 @@ function Slider(selector,bgDataArray) {
     this.arrayThumbs = [];
     this.arrayTitle = [];
     this.arrayLoaded = [];
+    this.arrayError = [];
     this.index = 0;
     this.selector = selector;
     this.country = selector.slice(1,2).toUpperCase()+selector.slice(2);
@@ -122,11 +123,13 @@ Slider.prototype = {
 
                 var currentIndex = cacheThis.index;
 
-                if (cacheThis.index <= 0) {
-                    cacheThis.index = cacheThis.arrayPicture.length - 1;
-                } else {
-                    cacheThis.index = cacheThis.index - 1;
-                }
+                do {
+                    if (cacheThis.index <= 0) {
+                        cacheThis.index = cacheThis.arrayPicture.length - 1;
+                    } else {
+                        cacheThis.index = cacheThis.index - 1;
+                    }
+                } while(cacheThis.arrayError[cacheThis.index]);
 
                 var $old = $(that + ' .bg-id-' + currentIndex);
                 var $zoom =$(that + ' .gallery-zoom');
@@ -152,6 +155,7 @@ Slider.prototype = {
                     });
 
                     $(newImg).on('error', function () {
+                        cacheThis.arrayError[cacheThis.index] = true;
                         $(newImg).off('load');
                         $(newImg).off('error');
                         newImg = null;
@@ -166,19 +170,29 @@ Slider.prototype = {
 
                 }
 
-                var $new = $(that + ' .bg-id-' + cacheThis.index);
-                $new.hide();
-
-
                 var _pushLeft = function () {
+                    var $new = $(that + ' .bg-id-' + cacheThis.index);
+                    $new.hide();
+
                     var spanElement = $(that + ' .title-name');
                     spanElement.empty();
-                    $zoom.removeClass('visible7');
+
+                    $zoom.removeClass('visible7 displayNot');
+
                     setTimeout(function () {
                         leftClick = false;
                         spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
-                        $zoom.addClass('visible7'); // добавить условие для показа
+
+                        var $img = $(' .gallery-bg-img', $new);
+                        var imgWidth = $img.attr('data-width');
+                        var imgHeight = $img.attr('data-height');
+                        if (imgWidth > 300 && imgHeight > 200) {
+                            $zoom.addClass('visible7');
+                        } else {
+                            $zoom.addClass('displayNot');
+                        }
                     }, 600);
+
                     $old.hide();
                     $new.css({
                         display: 'block',
@@ -210,11 +224,13 @@ Slider.prototype = {
 
                 var currentIndex = cacheThis.index;
 
-                cacheThis.index = cacheThis.index + 1;
+                do {
+                    cacheThis.index = cacheThis.index + 1;
 
-                if (cacheThis.index >= cacheThis.arrayPicture.length) {
-                    cacheThis.index = 0;
-                }
+                    if (cacheThis.index >= cacheThis.arrayPicture.length) {
+                        cacheThis.index = 0;
+                    }
+                } while(cacheThis.arrayError[cacheThis.index]);
 
                 var $old = $(that + ' .bg-id-' + currentIndex);
                 var $zoom = $(that + ' .gallery-zoom');
@@ -240,6 +256,7 @@ Slider.prototype = {
                     });
 
                     $(newImg).on('error', function () {
+                        cacheThis.arrayError[cacheThis.index] = true;
                         $(newImg).off('load');
                         $(newImg).off('error');
                         newImg = null;
@@ -255,19 +272,28 @@ Slider.prototype = {
 
                 }
 
-                var $new = $(that + ' .bg-id-' + cacheThis.index);
-                $new.hide();
-
-
                 var _pushRight = function () {
+                    var $new = $(that + ' .bg-id-' + cacheThis.index);
+                    $new.hide();
+
                     var spanElement = $(that + ' .title-name');
                     spanElement.empty();
-                    $zoom.removeClass('visible7');
+
+                    $zoom.removeClass('visible7 displayNot');
+
                     setTimeout(function () {
                         rightClick = false;
                         spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
-                        $zoom.addClass('visible7'); // добавить условие для показа
+                        var $img = $(' .gallery-bg-img', $new);
+                        var imgWidth = $img.attr('data-width');
+                        var imgHeight = $img.attr('data-height');
+                        if (imgWidth > 300 && imgHeight > 200) {
+                            $zoom.addClass('visible7');
+                        } else {
+                            $zoom.addClass('displayNot');
+                        }
                     }, 500);
+
                     $old.hide();
                     $new.css({
                         display: 'block',
