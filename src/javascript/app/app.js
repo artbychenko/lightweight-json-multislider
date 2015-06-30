@@ -47,37 +47,49 @@ Slider.prototype = {
     init: function () {
         /* append to DOM */
         var cacheThis = this;
-        var $body = $(this.selector);
+        var $body = $(cacheThis.selector);
         $body.addClass('body-bg-img');
-        var initialAppend = '<div class="bg-id-0">' +
-            '<img class="gallery-bg-img" src="' + cacheThis.arrayPicture[cacheThis.index] +
-            '" alt="' + cacheThis.arrayTitle[cacheThis.index] + '">' +
-            '</div>';
-        initialAppend += '<div class="gallery-title">' +
-        '<span class="title-name visibleNot">' + cacheThis.arrayTitle[cacheThis.index] + '</span>' +
-        '<div class="gallery-left-arrow"></div>' +
-        '<div class="gallery-right-arrow"></div>'+
-        '<div class="gallery-zoom visibleNot"></div>'+
-        '</div>';
-        var name = '<div class="gallery-name"><span class="name">'+this.country+'</span></div>';
-        var spinner = '<div class="bg-spinner">' +
-            '<span class="icon-spinner bg-spin"></span>' +
-            '</div>';
-        var $gallery = $(cacheThis.selector + ' .gallery-bg');
-        $gallery.hide().append(initialAppend);
-        $body.append(name);
-        $body.append(spinner);
-        $gallery.find('img').on('load', function () {
+
+        var initialAppend = $('<div class="bg-id-0">');
+
+        var newImage = new Image();
+        $(newImage).on('load', function () {
+            $(newImage).attr({
+                'data-width': newImage.width,
+                'data-height': newImage.height
+            });
             cacheThis.arrayLoaded[cacheThis.index] = true;
             cacheThis.afterLoad();
         });
-        $gallery.find('img').on('error', function () {
+        $(newImage).on('error', function () {
             $(this).prop('src', cacheThis.arrayPicture[cacheThis.index + 1]);
             $(this).prop('alt', cacheThis.arrayTitle[cacheThis.index + 1]);
             cacheThis.arrayLoaded[cacheThis.index + 1] = true;
-            cacheThis.afterLoad();
+            //cacheThis.afterLoad();
         });
+        newImage.className = "gallery-bg-img";
+        newImage.src = cacheThis.arrayPicture[cacheThis.index];
+        newImage.alt = "cacheThis.arrayTitle[cacheThis.index]";
+
+        initialAppend.append(newImage);
+
+        var nextElements ='<div class="gallery-title">' +
+            '<span class="title-name visibleNot">' + cacheThis.arrayTitle[cacheThis.index] + '</span>' +
+            '<div class="gallery-left-arrow"></div>' +
+            '<div class="gallery-right-arrow"></div>'+
+            '<div class="gallery-zoom visibleNot"></div>'+
+            '</div>';
+
+
+        var nameAndSpinner = '<div class="gallery-name"><span class="name">'+this.country+'</span></div>';
+        nameAndSpinner += '<div class="bg-spinner"><span class="icon-spinner bg-spin"></span></div>';
+
+        var $gallery = $(cacheThis.selector + ' .gallery-bg');
+        $gallery.hide().append(initialAppend);
+        $gallery.append(nextElements);
+        $body.append(nameAndSpinner);
     },
+
     afterLoad: function () {
         $(this.selector + ' .gallery-bg').fadeIn();
         this.hideSpinner();
