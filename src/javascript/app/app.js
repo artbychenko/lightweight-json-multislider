@@ -124,7 +124,7 @@ Slider.prototype = {
                 '<iframe src="//www.youtube.com/embed/' + id + '?autoplay=1&' +
                     '" frameborder="0" allowfullscreen></iframe>'
             ];
-        } else if (link.search(/^(http)/) === -1) {
+        } else if (link.search('http') === -1) {
             return [
                 'text',
                 link ];
@@ -163,7 +163,39 @@ Slider.prototype = {
             event.target.click();
         });
         var leftClick = false;
+
         $(that + ' .gallery-left-arrow').on('click', function () {
+
+            var _pushLeft = function () {
+                var $new = $(that + ' .bg-id-' + cacheThis.index);
+                $new.hide();
+
+                var spanElement = $(that + ' .title-name');
+                spanElement.empty();
+
+                setTimeout(function () {
+                    leftClick = false;
+                    spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
+
+                    var $img = $(' .gallery-bg-img', $new);
+
+                    if (cacheThis.checkImageSize($img)) {
+                        $zoom.addClass('visible7').removeClass('displayNot');
+                    }
+                }, 600);
+
+                $old.hide();
+                $new.css({
+                    display: 'block',
+                    opacity: 0.1
+                });
+                $new.animate({
+                    opacity: 1
+                },{
+                    duration: 1000
+                });
+            };
+
             if (!leftClick) {
                 leftClick = true;
 
@@ -183,6 +215,8 @@ Slider.prototype = {
 
                 //check type of link
                 var typeLink = cacheThis.arrayType[cacheThis.index];
+
+                // show zoom-icon background type = play or zoom
                 $zoom.addClass('displayNot').removeClass('visible7');
                 cacheThis.switchZoomOrPlay(typeLink,$zoom);
 
@@ -190,68 +224,48 @@ Slider.prototype = {
 
                     var initialAppend = $('<div class = "bg-id-' + cacheThis.index + '">');
 
+                    if (typeLink !== 'text') {
 
-                    var newImg = new Image();
+                        var newImg = new Image();
 
-                    $(newImg).on('load', function () {
-                        $(this).off('load');
+                        $(newImg).on('load', function () {
+                            $(this).off('load');
+                            cacheThis.hideSpinner();
+                            cacheThis.arrayLoaded[cacheThis.index] = true;
+                            $(this).attr({
+                                'data-width': newImg.width,
+                                'data-height': newImg.height,
+                                'alt': cacheThis.arrayTitle[cacheThis.index],
+                                'class': 'gallery-bg-img'
+                            });
+                            initialAppend.append(newImg);
+                            $(that + ' .gallery-bg').prepend(initialAppend);
+                            _pushLeft();
+                        });
+
+                        $(newImg).on('error', function () {
+                            cacheThis.arrayError[cacheThis.index] = true;
+                            $(newImg).off('load');
+                            $(newImg).off('error');
+                            newImg = null;
+                            $old.hide();
+                            cacheThis.hideSpinner();
+                            leftClick = false;
+                            $(that + ' .gallery-left-arrow').trigger('click');
+                        });
+
+                        newImg.src = cacheThis.arrayPicture[cacheThis.index];
+                    } else {
                         cacheThis.hideSpinner();
                         cacheThis.arrayLoaded[cacheThis.index] = true;
-                        $(this).attr({
-                            'data-width': newImg.width,
-                            'data-height': newImg.height,
-                            'alt': cacheThis.arrayTitle[cacheThis.index],
-                            'class': 'gallery-bg-img'
-                        });
-                        initialAppend.append(newImg);
+                        $('<span class ="gallery-bg-text">' +
+                            cacheThis.arrayPicture[cacheThis.index]+'</span>').appendTo(initialAppend);
                         $(that + ' .gallery-bg').prepend(initialAppend);
                         _pushLeft();
-                    });
-
-                    $(newImg).on('error', function () {
-                        cacheThis.arrayError[cacheThis.index] = true;
-                        $(newImg).off('load');
-                        $(newImg).off('error');
-                        newImg = null;
-                        $old.hide();
-                        cacheThis.hideSpinner();
-                        leftClick = false;
-                        $(that + ' .gallery-left-arrow').trigger('click');
-                    });
-
-                    newImg.src = cacheThis.arrayPicture[cacheThis.index];
-
+                    }
                 }
 
-                var _pushLeft = function () {
-                    var $new = $(that + ' .bg-id-' + cacheThis.index);
-                    $new.hide();
 
-                    var spanElement = $(that + ' .title-name');
-                    spanElement.empty();
-
-                    setTimeout(function () {
-                        leftClick = false;
-                        spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
-
-                        var $img = $(' .gallery-bg-img', $new);
-
-                        if (cacheThis.checkImageSize($img)) {
-                            $zoom.addClass('visible7').removeClass('displayNot');
-                        }
-                    }, 600);
-
-                    $old.hide();
-                    $new.css({
-                        display: 'block',
-                        opacity: 0.1
-                    });
-                    $new.animate({
-                        opacity: 1
-                    },{
-                        duration: 1000
-                    });
-                };
 
                 if (cacheThis.arrayLoaded[cacheThis.index]) {
                     _pushLeft();
@@ -260,13 +274,45 @@ Slider.prototype = {
                 }
             }
         });
+
         $(that + ' .gallery-right-arrow').on('touchstart', function (event) {
             event.stopPropagation();
             event.preventDefault();
             event.target.click();
         });
         var rightClick = false;
+
         $(that + ' .gallery-right-arrow').on('click', function () {
+
+            var _pushRight = function () {
+                var $new = $(that + ' .bg-id-' + cacheThis.index);
+                $new.hide();
+
+                var spanElement = $(that + ' .title-name');
+                spanElement.empty();
+
+                setTimeout(function () {
+                    rightClick = false;
+                    spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
+                    var $img = $(' .gallery-bg-img', $new);
+
+                    if (cacheThis.checkImageSize($img)) {
+                        $zoom.addClass('visible7').removeClass('displayNot');
+                    }
+                }, 500);
+
+                $old.hide();
+                $new.css({
+                    display: 'block',
+                    opacity: 0.1
+                });
+                $new.animate({
+                    opacity: 1
+                },{
+                    duration: 1000
+                });
+            };
+
             if (!rightClick) {
                 rightClick = true;
 
@@ -293,67 +339,47 @@ Slider.prototype = {
 
                     var initialAppend = $('<div class = "bg-id-' + cacheThis.index + '">');
 
-                    var newImg = new Image();
+                    if (typeLink !== 'text') {
+                        var newImg = new Image();
 
-                    $(newImg).on('load', function () {
-                        $(newImg).off('load');
+                        $(newImg).on('load', function () {
+                            $(newImg).off('load');
+                            cacheThis.hideSpinner();
+                            cacheThis.arrayLoaded[cacheThis.index] = true;
+                            $(newImg).attr({
+                                'data-width': newImg.width,
+                                'data-height': newImg.height,
+                                'alt': cacheThis.arrayTitle[cacheThis.index],
+                                'class': 'gallery-bg-img'
+                            });
+                            initialAppend.append(newImg);
+                            $(that + ' .gallery-bg').prepend(initialAppend);
+                            _pushRight();
+                        });
+
+                        $(newImg).on('error', function () {
+                            cacheThis.arrayError[cacheThis.index] = true;
+                            $(newImg).off('load');
+                            $(newImg).off('error');
+                            newImg = null;
+                            $old.hide();
+                            cacheThis.hideSpinner();
+                            rightClick = false;
+                            $(that + ' .gallery-right-arrow').trigger('click');
+                        });
+
+                        newImg.src = cacheThis.arrayPicture[cacheThis.index];
+
+                    } else {
                         cacheThis.hideSpinner();
                         cacheThis.arrayLoaded[cacheThis.index] = true;
-                        $(newImg).attr({
-                            'data-width': newImg.width,
-                            'data-height': newImg.height,
-                            'alt': cacheThis.arrayTitle[cacheThis.index],
-                            'class': 'gallery-bg-img'
-                        });
-                        initialAppend.append(newImg);
+                        $('<span class ="gallery-bg-text">' +
+                            cacheThis.arrayPicture[cacheThis.index]+'</span>').appendTo(initialAppend);
                         $(that + ' .gallery-bg').prepend(initialAppend);
                         _pushRight();
-                    });
-
-                    $(newImg).on('error', function () {
-                        cacheThis.arrayError[cacheThis.index] = true;
-                        $(newImg).off('load');
-                        $(newImg).off('error');
-                        newImg = null;
-                        $old.hide();
-                        cacheThis.hideSpinner();
-                        rightClick = false;
-                        $(that + ' .gallery-right-arrow').trigger('click');
-                    });
-
-                    newImg.src = cacheThis.arrayPicture[cacheThis.index];
-
+                    }
 
                 }
-
-                var _pushRight = function () {
-                    var $new = $(that + ' .bg-id-' + cacheThis.index);
-                    $new.hide();
-
-                    var spanElement = $(that + ' .title-name');
-                    spanElement.empty();
-
-                    setTimeout(function () {
-                        rightClick = false;
-                        spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
-                        var $img = $(' .gallery-bg-img', $new);
-
-                        if (cacheThis.checkImageSize($img)) {
-                            $zoom.addClass('visible7').removeClass('displayNot');
-                        }
-                    }, 500);
-
-                    $old.hide();
-                    $new.css({
-                        display: 'block',
-                        opacity: 0.1
-                    });
-                    $new.animate({
-                        opacity: 1
-                    },{
-                        duration: 1000
-                    });
-                };
 
                 if (cacheThis.arrayLoaded[cacheThis.index]) {
                     _pushRight();
