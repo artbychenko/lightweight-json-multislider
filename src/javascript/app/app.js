@@ -389,6 +389,54 @@ Slider.prototype = {
             }
         });
 
+        $(that + ' .gallery-zoom').on('touchstart', function (event) {
+            event.stopPropagation();
+            event.preventDefault();
+            event.target.click();
+        });
+
+        $(that + ' .gallery-zoom').on('click', function () {
+            var $modal_container =  $('.modal_container');
+            var $modal_window =  $('.modal_window');
+            var $img = $('.gallery-bg-img' ,that + ' .bg-id-' + cacheThis.index);
+            var imgSrc = $img.attr('src');
+            var imgWidth = $img.data('width');
+            var imgHeight = $img.data('height');
+            var $imgContainer = $modal_container.removeClass('displayNot').find('.content');
+            var modalWidth = $modal_container.width();
+            var modalHeight = $modal_container.height();
+            // math for the best img position
+            var width = (modalWidth-70 > imgWidth)? imgWidth: modalWidth-70;
+            var height = width * imgHeight / imgWidth;
+            height = (imgHeight > height)? height: imgHeight;
+            height = (modalHeight-70 > height)? height: modalHeight-70;
+            width = height * imgWidth / imgHeight;
+            var top = (modalHeight - height)/2;
+            top = (top > 35)? top: 35;
+            top = ((modalHeight - height) > 400)? 200: top;
+            $modal_window.css({
+               width: width,
+               height: height,
+               'top': top + 'px'
+            });
+            var $newImg = $('<img>',{
+                src: imgSrc,
+                class: "modal_bg_img"
+            });
+            $imgContainer.append($newImg);
+        });
+
+        $('.back_button').on('touchstart', function (event) {
+            event.stopPropagation();
+            event.preventDefault();
+            event.target.click();
+        });
+
+        $('.back_button').on('click', function () {
+           $('.modal_container').addClass('displayNot').find('.content').empty();
+
+        });
+
         var xDown = null;
         var _handleTouchStart = function (e) {
             xDown = e.originalEvent.touches[0].clientX;
