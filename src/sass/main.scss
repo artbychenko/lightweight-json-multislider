@@ -48,6 +48,9 @@ header.main_page:after {
   height: 80px;
   background: #282a2d;
   color: #676b71;
+  transition-property: color, background-color;
+  transition-duration: 0.1s, 0.1s;
+  transition-timing-function: ease, ease;
   &:after {
     @include clearfix;
   }
@@ -239,6 +242,7 @@ article.countries {
   color: #ffffff;
   background: #282a2d;
   opacity: 0.7;
+  transition: opacity 0.2s linear;
   &  > div {
     width: 100%;
     height: 100%;
@@ -262,6 +266,7 @@ article.countries {
 
 .gallery-name {
   font: 36px NewBaskervilleC, serif;
+  transition: opacity 0.2s linear;
   color: #ffffff;
   position: absolute;
   top: 50%;
@@ -291,6 +296,7 @@ article.countries {
 }
 
 .gallery-title > span {
+  transition: opacity 0.1s ease;
   display: block;
   position:absolute;
   bottom: 15px;
@@ -303,6 +309,7 @@ article.countries {
 .gallery-left-arrow {
   background: url("../images/svg/prev_slide.svg") no-repeat;
   opacity: 0.7;
+  transition: opacity 0.1s ease;
   position: absolute;
   bottom: 20px;
   right: 55px;
@@ -315,6 +322,7 @@ article.countries {
 .gallery-right-arrow {
   background: url("../images/svg/next_slide.svg") no-repeat;
   opacity: 0.7;
+  transition: opacity 0.1s ease;
   position: absolute;
   bottom: 20px;
   right: 20px;
@@ -325,8 +333,8 @@ article.countries {
 }
 
 .gallery-zoom {
-  background: url("../images/svg/icon_zoom.svg") no-repeat;
   opacity: 0;
+  transition: opacity 0.1s ease;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -336,6 +344,12 @@ article.countries {
   height: 40px;
   cursor: pointer;
   z-index: 1;
+  &.zoom {
+    background: url("../images/svg/icon_zoom.svg") no-repeat;
+  }
+  &.play {
+    background: url("../images/svg/icon_play.svg") no-repeat;
+  }
 }
 
 .visible1 {

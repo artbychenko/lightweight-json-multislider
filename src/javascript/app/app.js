@@ -8,35 +8,20 @@
 
 function Slider(selector,bgDataArray) {
     this.arrayPicture = [];
-    this.arrayThumbs = [];
+    this.arrayType = [];
     this.arrayTitle = [];
     this.arrayLoaded = [];
     this.arrayError = [];
     this.index = 0;
     this.selector = selector;
-    this.country = selector.slice(1,2).toUpperCase()+selector.slice(2);
+    this.country = this.prepareCountryName(selector);
     var setupIndex = 0;
-    var thumb;
-    var length = 0;
-    var path;
-    if (bgDataArray['bgHomePage']) {
-        this.bgHomePage = bgDataArray['bgHomePage'];
-        delete bgDataArray['bgHomePage'];
-    } else {
-        this.bgHomePage = '/';
-    }
-    if (bgDataArray['pathToThumb']) {
-        this.pathToThumb = bgDataArray['pathToThumb'];
-        delete bgDataArray['pathToThumb'];
-    } else {
-        this.pathToThumb = 'img/thumb/';
-    }
+    var filterLink = [];
+
     for (var key in bgDataArray) {
-        this.arrayPicture[setupIndex] = bgDataArray[key];
-        path = bgDataArray[key].split('/');
-        length = path.length;
-        thumb = this.pathToThumb + path[length - 1];
-        this.arrayThumbs[setupIndex] = thumb;
+        filterLink = this.filterLink(bgDataArray[key]);
+        this.arrayType[setupIndex] = filterLink[0];
+        this.arrayPicture[setupIndex] = filterLink[1];
         this.arrayTitle[setupIndex] = key;
         this.arrayLoaded[setupIndex] = false;
         setupIndex = setupIndex + 1;
@@ -45,19 +30,26 @@ function Slider(selector,bgDataArray) {
 
 Slider.prototype = {
     constructor: Slider,
+    prepareCountryName: function(country){
+        var words = country.slice(1).split('_');
+        for (var i = 0; i < words.length; i++){
+            words[i] = words[i].slice(0,1).toUpperCase()+words[i].slice(1);
+        }
+        return words.join(' ');
+    },
     init: function () {
         /* append to DOM */
         var cacheThis = this;
         var $body = $(cacheThis.selector);
         $body.addClass('body-bg-img');
-
         var newImage = new Image();
 
         $(newImage).on('load', function () {
             $(newImage).attr({
                 'data-width': newImage.width,
                 'data-height': newImage.height,
-                'alt': cacheThis.arrayTitle[cacheThis.index]
+                'alt': cacheThis.arrayTitle[cacheThis.index],
+                'class': 'gallery-bg-img'
             });
             var initialAppend = $('<div class = "bg-id-' + cacheThis.index + '">');
 
@@ -65,7 +57,7 @@ Slider.prototype = {
                 '<span class="title-name visibleNot">' + cacheThis.arrayTitle[cacheThis.index] + '</span>' +
                 '<div class="gallery-left-arrow"></div>' +
                 '<div class="gallery-right-arrow"></div>'+
-                '<div class="gallery-zoom visibleNot"></div>'+
+                '<div class="gallery-zoom displayNot"></div>'+
                 '</div>';
 
             var nameAndSpinner = '<div class="gallery-name"><span class="name">'+cacheThis.country+'</span></div>';
@@ -77,7 +69,9 @@ Slider.prototype = {
             $gallery.hide().append(initialAppend);
             $gallery.append(nextElements);
             $body.append(nameAndSpinner);
+
             cacheThis.arrayLoaded[cacheThis.index] = true;
+
             cacheThis.afterLoad();
 
         });
@@ -88,26 +82,78 @@ Slider.prototype = {
             $(this).prop('alt', cacheThis.arrayTitle[cacheThis.index]);
         });
 
-        newImage.className = "gallery-bg-img";
         newImage.src = cacheThis.arrayPicture[cacheThis.index];
     },
 
     afterLoad: function () {
-        $(this.selector + ' .gallery-bg').fadeIn();
+        var that = this.selector;
+        $(that + ' .gallery-bg').fadeIn();
         this.hideSpinner();
+        var $zoom = $(that + ' .gallery-zoom');
+        var $img = $(that + ' .gallery-bg-img');
+
+        if (this.checkImageSize($img)) {
+            $zoom.removeClass('displayNot');
+        } else {
+        }
+
+        this.switchZoomOrPlay(this.arrayType[this.index],$zoom);
+
         this.setupGallery();
     },
+
     showSpinner: function () {
         var that = this.selector;
         $(that + ' .icon-spinner').addClass('bg-spin');
         $(that + ' .bg-spinner').fadeIn();
     },
+
     hideSpinner: function () {
         var that = this.selector;
         $(that + ' .bg-spinner').stop(true, true).fadeOut(function () {
             $(that + ' .icon-spinner').removeClass('bg-spin');
         });
     },
+
+    filterLink: function (link){
+        if (link.search(/^(https:\/\/www\.youtube\.com)/) !== -1) {
+            var id = link.match(/(watch\?v=)(.*)$/)[2];
+            return [
+                'video',
+                'https://img.youtube.com/vi/' + id + '/hqdefault.jpg',
+                '<iframe src="//www.youtube.com/embed/' + id + '?autoplay=1&' +
+                    '" frameborder="0" allowfullscreen></iframe>'
+            ];
+        } else if (link.search(/^(http)/) === -1) {
+            return [
+                'text',
+                link ];
+        } else {
+            return [
+                'img',
+                link ];
+        }
+    },
+
+    checkImageSize: function ($img){
+        var imgWidth = $img.attr('data-width');
+        var imgHeight = $img.attr('data-height');
+        if (imgWidth > $img.width() && imgHeight > $img.height()) {
+            return true;
+        }
+    },
+
+    switchZoomOrPlay: function (typeLink,$zoom){
+        switch (typeLink){
+            case 'video':
+                $zoom.addClass('play').removeClass('zoom');
+                break;
+            case 'img':
+                $zoom.addClass('zoom').removeClass('play');
+                break;
+        }
+    },
+
     setupGallery: function () {
         var cacheThis = this;
         var that = this.selector;
@@ -123,6 +169,7 @@ Slider.prototype = {
 
                 var currentIndex = cacheThis.index;
 
+                // check error links
                 do {
                     if (cacheThis.index <= 0) {
                         cacheThis.index = cacheThis.arrayPicture.length - 1;
@@ -134,9 +181,15 @@ Slider.prototype = {
                 var $old = $(that + ' .bg-id-' + currentIndex);
                 var $zoom =$(that + ' .gallery-zoom');
 
+                //check type of link
+                var typeLink = cacheThis.arrayType[cacheThis.index];
+                $zoom.addClass('displayNot').removeClass('visible7');
+                cacheThis.switchZoomOrPlay(typeLink,$zoom);
+
                 if (!$(that + ' .bg-id-' + cacheThis.index).length) {
 
                     var initialAppend = $('<div class = "bg-id-' + cacheThis.index + '">');
+
 
                     var newImg = new Image();
 
@@ -147,7 +200,8 @@ Slider.prototype = {
                         $(this).attr({
                             'data-width': newImg.width,
                             'data-height': newImg.height,
-                            'alt': cacheThis.arrayTitle[cacheThis.index]
+                            'alt': cacheThis.arrayTitle[cacheThis.index],
+                            'class': 'gallery-bg-img'
                         });
                         initialAppend.append(newImg);
                         $(that + ' .gallery-bg').prepend(initialAppend);
@@ -165,7 +219,6 @@ Slider.prototype = {
                         $(that + ' .gallery-left-arrow').trigger('click');
                     });
 
-                    newImg.className = "gallery-bg-img";
                     newImg.src = cacheThis.arrayPicture[cacheThis.index];
 
                 }
@@ -177,19 +230,14 @@ Slider.prototype = {
                     var spanElement = $(that + ' .title-name');
                     spanElement.empty();
 
-                    $zoom.removeClass('visible7 displayNot');
-
                     setTimeout(function () {
                         leftClick = false;
                         spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
 
                         var $img = $(' .gallery-bg-img', $new);
-                        var imgWidth = $img.attr('data-width');
-                        var imgHeight = $img.attr('data-height');
-                        if (imgWidth > $img.width() && imgHeight > $img.height()) {
-                            $zoom.addClass('visible7');
-                        } else {
-                            $zoom.addClass('displayNot');
+
+                        if (cacheThis.checkImageSize($img)) {
+                            $zoom.addClass('visible7').removeClass('displayNot');
                         }
                     }, 600);
 
@@ -224,6 +272,7 @@ Slider.prototype = {
 
                 var currentIndex = cacheThis.index;
 
+               //check error links
                 do {
                     cacheThis.index = cacheThis.index + 1;
 
@@ -234,6 +283,11 @@ Slider.prototype = {
 
                 var $old = $(that + ' .bg-id-' + currentIndex);
                 var $zoom = $(that + ' .gallery-zoom');
+
+                //check type of link
+                var typeLink = cacheThis.arrayType[cacheThis.index];
+                $zoom.addClass('displayNot').removeClass('visible7');
+                cacheThis.switchZoomOrPlay(typeLink,$zoom);
 
                 if (!$(that + ' .bg-id-' + cacheThis.index).length) {
 
@@ -248,7 +302,8 @@ Slider.prototype = {
                         $(newImg).attr({
                             'data-width': newImg.width,
                             'data-height': newImg.height,
-                            'alt': cacheThis.arrayTitle[cacheThis.index]
+                            'alt': cacheThis.arrayTitle[cacheThis.index],
+                            'class': 'gallery-bg-img'
                         });
                         initialAppend.append(newImg);
                         $(that + ' .gallery-bg').prepend(initialAppend);
@@ -266,7 +321,6 @@ Slider.prototype = {
                         $(that + ' .gallery-right-arrow').trigger('click');
                     });
 
-                    newImg.className = "gallery-bg-img";
                     newImg.src = cacheThis.arrayPicture[cacheThis.index];
 
 
@@ -279,18 +333,13 @@ Slider.prototype = {
                     var spanElement = $(that + ' .title-name');
                     spanElement.empty();
 
-                    $zoom.removeClass('visible7 displayNot');
-
                     setTimeout(function () {
                         rightClick = false;
                         spanElement.text(cacheThis.arrayTitle[cacheThis.index]);
                         var $img = $(' .gallery-bg-img', $new);
-                        var imgWidth = $img.attr('data-width');
-                        var imgHeight = $img.attr('data-height');
-                        if (imgWidth > $img.width() && imgHeight > $img.height()) {
-                            $zoom.addClass('visible7');
-                        } else {
-                            $zoom.addClass('displayNot');
+
+                        if (cacheThis.checkImageSize($img)) {
+                            $zoom.addClass('visible7').removeClass('displayNot');
                         }
                     }, 500);
 
@@ -340,5 +389,6 @@ Slider.prototype = {
     }
 
 };
+
 Slider.gallery =[];
 module.exports = Slider;

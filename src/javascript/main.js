@@ -39,12 +39,21 @@ $(document).ready(function () {
 }());
 
 // initialize tiles with countries, use constructor Slider
+// @param object data.json with links
 (function (countries) {
+    function addInnerCountrySeparator (country){
+        country = country.trim().toLowerCase();
+        var words = country.split(' ');
+        if (words.length > 1) {
+            return words.join('_');
+        } else return country;
+    }
     $('.gallery-bg').each(function(ix,val){
         if (val) {
             var country = val.textContent || val.innerText;
+            country = addInnerCountrySeparator(country);
             if (country && countries[country] && !(Slider.gallery[country])) {
-                val.parentNode.id = country;
+                 val.parentNode.id = country;
                 $(val).empty();
                 Slider.gallery[country] =  new Slider('#'+country, countries[country]);
                 Slider.gallery[country].init();
