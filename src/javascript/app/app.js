@@ -153,6 +153,21 @@ Slider.prototype = {
                 break;
         }
     },
+    computeOptimalImgPosition: function (modalWidth,modalHeight,imgWidth,imgHeight){
+        var width = (modalWidth-70 > imgWidth)? imgWidth: modalWidth-70;
+        var height = width * imgHeight / imgWidth;
+        height = (imgHeight > height)? height: imgHeight;
+        height = (modalHeight-70 > height)? height: modalHeight-70;
+        width = height * imgWidth / imgHeight;
+        var top = (modalHeight - height)/2;
+        top = (top > 35)? top: 35;
+        top = ((modalHeight - height) > 400)? 200: top;
+        return {
+            width: width,
+            height: height,
+            top: top
+        };
+    },
 
     setupGallery: function () {
         var cacheThis = this;
@@ -398,32 +413,49 @@ Slider.prototype = {
         $(that + ' .gallery-zoom').on('click', function () {
             var $modal_container =  $('.modal_container');
             var $modal_window =  $('.modal_window');
-            var $img = $('.gallery-bg-img' ,that + ' .bg-id-' + cacheThis.index);
-            var imgSrc = $img.attr('src');
-            var imgWidth = $img.data('width');
-            var imgHeight = $img.data('height');
-            var $imgContainer = $modal_container.removeClass('displayNot').find('.content');
             var modalWidth = $modal_container.width();
             var modalHeight = $modal_container.height();
-            // math for the best img position
-            var width = (modalWidth-70 > imgWidth)? imgWidth: modalWidth-70;
-            var height = width * imgHeight / imgWidth;
-            height = (imgHeight > height)? height: imgHeight;
-            height = (modalHeight-70 > height)? height: modalHeight-70;
-            width = height * imgWidth / imgHeight;
-            var top = (modalHeight - height)/2;
-            top = (top > 35)? top: 35;
-            top = ((modalHeight - height) > 400)? 200: top;
-            $modal_window.css({
-               width: width,
-               height: height,
-               'top': top + 'px'
-            });
-            var $newImg = $('<img>',{
-                src: imgSrc,
-                class: "modal_bg_img"
-            });
-            $imgContainer.append($newImg);
+            var typeLink = cacheThis.arrayType[cacheThis.index];
+            var $imgContainer = $modal_container.removeClass('displayNot').find('.content');
+                switch(typeLink) {
+                case('img'):
+                    var $img = $('.gallery-bg-img', that + ' .bg-id-' + cacheThis.index);
+                    var imgSrc = $img.attr('src');
+                    var imgWidth = $img.data('width');
+                    var imgHeight = $img.data('height');
+
+                    // compute the best img position
+                    var pos = cacheThis.computeOptimalImgPosition(modalWidth, modalHeight, imgWidth, imgHeight);
+
+                    $modal_window.css({
+                        width: pos.width,
+                        height: pos.height,
+                        'top': pos.top + 'px'
+                    });
+                    var $newImg = $('<img>', {
+                        src: imgSrc,
+                        class: "modal_bg_img"
+                    });
+                    $imgContainer.append($newImg);
+                    break;
+                case('video'):
+                    var videoId = cacheThis.arrayPicture[cacheThis.index].match(/(vi\/)([^\/]*)/);
+                    videoId = videoId[videoId.length-1];
+                    var videoSrc = 'https://www.youtube.com/embed/'+videoId;
+                    var pos = cacheThis.computeOptimalImgPosition(modalWidth, modalHeight, 740, 530);
+                    $modal_window.css({
+                        width: pos.width,
+                        height: pos.height,
+                        'top': pos.top + 'px'
+                    });
+                    $('<iframe>',{
+                        width: pos.width,
+                        height: pos.height,
+                        'src': videoSrc,
+                        'frameborder': 0,
+                        'allowfullscreen': true
+                    }).appendTo($imgContainer);
+            }
         });
 
         $('.back_button').on('touchstart', function (event) {
