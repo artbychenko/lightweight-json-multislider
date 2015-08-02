@@ -1,7 +1,7 @@
 var $ = global.$ = global.jQuery = require('jquery/dist/jquery');
 
 // folder contains href
-var links = require('images_links/data.json');
+var links = require('images_links/data2.json');
 
 var Slider = require('app/app');
 
@@ -23,6 +23,32 @@ $(document).ready(function () {
     });
 }());
 
+
+
+// initialize tiles with countries, use constructor Slider
+// @param object data.json with links
+    function addInnerCountrySeparator (country){
+        country = country.trim().toLowerCase();
+        var words = country.split(' ');
+        if (words.length > 1) {
+            return words.join('_');
+        } else return country;
+    }
+   /* $('.gallery-bg').each(function(ix,val){
+        if (val) {
+            var country = val.textContent || val.innerText;
+            country = addInnerCountrySeparator(country);
+            if (country && countries[country] && !(Slider.gallery[country])) {
+                 val.parentNode.id = country;
+                $(val).empty();
+                (new Slider('#'+country, countries[country])).init();
+            }
+        }
+    });*/
+    links.forEach(function(val,ix){
+        (new Slider('images_container',links[ix])).init();
+    });
+
 // add fade effect for tile images
 (function(){
     $('.gallery-bg').hover(function() {
@@ -37,29 +63,5 @@ $(document).ready(function () {
         $('.gallery-name', this.parentNode).addClass('displayBlock').removeClass('displayNot');
     });
 }());
-
-// initialize tiles with countries, use constructor Slider
-// @param object data.json with links
-(function (countries) {
-    function addInnerCountrySeparator (country){
-        country = country.trim().toLowerCase();
-        var words = country.split(' ');
-        if (words.length > 1) {
-            return words.join('_');
-        } else return country;
-    }
-    $('.gallery-bg').each(function(ix,val){
-        if (val) {
-            var country = val.textContent || val.innerText;
-            country = addInnerCountrySeparator(country);
-            if (country && countries[country] && !(Slider.gallery[country])) {
-                 val.parentNode.id = country;
-                $(val).empty();
-                Slider.gallery[country] =  new Slider('#'+country, countries[country]);
-                Slider.gallery[country].init();
-            }
-        }
-    });
-})(links);
 
 });

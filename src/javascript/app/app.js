@@ -6,18 +6,20 @@
 //          <h1 class="gallery-bg">russia</h1>
 //      </article>
 
-function Slider(selector,bgDataArray) {
+function Slider(container,bgDataArray) {
     this.arrayPicture = [];
     this.arrayType = [];
     this.arrayTitle = [];
     this.arrayLoaded = [];
     this.arrayError = [];
     this.index = 0;
-    this.selector = selector;
+    this.container = container;
+    this.id = this.addInnerCountrySeparator(bgDataArray['name']);
+    var selector = this.selector ='#'+ this.id;
     this.country = this.prepareCountryName(selector);
     var setupIndex = 0;
     var filterLink = [];
-
+    var bgDataArray = bgDataArray['links'];
     for (var key in bgDataArray) {
         filterLink = this.filterLink(bgDataArray[key]);
         this.arrayType[setupIndex] = filterLink[0];
@@ -37,11 +39,23 @@ Slider.prototype = {
         }
         return words.join(' ');
     },
+    addInnerCountrySeparator: function(country){
+        country = country.trim().toLowerCase();
+        var words = country.split(' ');
+        if (words.length > 1) {
+            return words.join('_');
+        } else return country;
+    },
     init: function () {
-        /* append to DOM */
         var cacheThis = this;
-        var $body = $(cacheThis.selector);
-        $body.addClass('body-bg-img');
+        
+        var $main =$('<article class="country body-bg-img" id =' + cacheThis.id + '>');
+        var $gallery = $('<h1 class="gallery-bg">');
+        
+        $main.append($gallery);
+        
+        $('#'+cacheThis.container).append($main);
+       
         var newImage = new Image();
 
         $(newImage).on('load', function () {
@@ -65,10 +79,9 @@ Slider.prototype = {
 
             initialAppend.append(newImage);
 
-            var $gallery = $(cacheThis.selector + ' .gallery-bg');
             $gallery.hide().append(initialAppend);
             $gallery.append(nextElements);
-            $body.append(nameAndSpinner);
+            $main.append(nameAndSpinner);
 
             cacheThis.arrayLoaded[cacheThis.index] = true;
 
