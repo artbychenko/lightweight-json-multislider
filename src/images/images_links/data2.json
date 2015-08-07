@@ -1,0 +1,67 @@
+[ 
+  {
+    "name": "cuba",
+    "links": {
+      "Brooklyn Bridge by night": "http://www.radiantmediatechs.com/radiant-bgphoto/img/brooklyn-bridge-by-night.jpg",
+      "Cuba": "Хэмингуэй, став весьма знаменитым, естественно, мог выбрать любое место в мире. Почему же он 22 года прожил в Гаване? Потому что это свобода!",
+      "Brooklyn Bridge within": "http://www.radiantmediatechs.com/radiant-bgphoto/img/under-brooklyn-bridge.jpg",
+      "Video": "https://www.youtube.com/watch?v=HUIKfLEEb3w",
+      "300x200": "http://images.solwayscuba.com/photos/hotels/CCCMEL/hotel-melia-cayo-coco-hotel_1.jpg",
+      "Broadway view": "http://www.radiantmediatechs.com/radiant-bgphoto/img/broadway.jpg",
+      "ups": "http:/ошибка.jpg",
+      "Central Park bench": "http://www.radiantmediatechs.com/radiant-bgphoto/img/central-park-bench.jpg",
+      "Central Park under The snow": "http://www.radiantmediatechs.com/radiant-bgphoto/img/central-park-under-the-snow.jpg",
+      "128x128": "http://www.worldlifeexpectancy.com/images/flags/country/128/CU.png"
+    }
+  },
+  {
+    "name": "russia",
+    "links": {
+      "ups": "http:/ошибка.jpg",
+      "Long Island": "http://www.radiantmediatechs.com/radiant-bgphoto/img/long-island.jpg",
+      "Russia": "Просто какой-то текст. a может и не просто какой-то",
+      "Russia": "https://www.youtube.com/watch?v=yeWaIU48ZsQ",
+      "300x200": "http://images.solwayscuba.com/photos/hotels/CCCMEL/hotel-melia-cayo-coco-hotel_1.jpg",
+      "Broadway view": "http://www.radiantmediatechs.com/radiant-bgphoto/img/broadway.jpg",
+      "Manhattan Black And White": "http://www.radiantmediatechs.com/radiant-bgphoto/img/manhattan-black-and-white.jpg",
+      "Manhattan Buildings": "http://www.radiantmediatechs.com/radiant-bgphoto/img/manhattan-buildings.jpg",
+      "New York City Cabs": "http://www.radiantmediatechs.com/radiant-bgphoto/img/new-york-cabs.jpg",
+      "New York City Buildings": "http://www.radiantmediatechs.com/radiant-bgphoto/img/new-york-city-buildings.jpg"
+    }
+  },
+  {
+    "name": "latin america yes",
+    "links": {
+      "Latin History": "Жили были старик со старухой, у самого синего моря.",
+      "New York City By Night": "http://www.radiantmediatechs.com/radiant-bgphoto/img/new-york-city-by-night.jpg",
+      "New York City Docks": "http://www.radiantmediatechs.com/radiant-bgphoto/img/new-york-city-docks.jpg",
+      "300x200": "http://images.solwayscuba.com/photos/hotels/CCCMEL/hotel-melia-cayo-coco-hotel_1.jpg",
+      "Broadway view": "http://www.radiantmediatechs.com/radiant-bgphoto/img/broadway.jpg",
+      "ups": "http:/ошибка.jpg",
+      "New York City From The Sea": "http://www.radiantmediatechs.com/radiant-bgphoto/img/new-york-city-view.jpg",
+      "New York City Skyline": "http://www.radiantmediatechs.com/radiant-bgphoto/img/new-york-skyline.jpg",
+      "Times Square": "http://www.radiantmediatechs.com/radiant-bgphoto/img/times-square.jpg"
+    }
+  },
+  {
+    "name": "japan",
+    "links": {
+      "Video": "https://www.youtube.com/watch?v=HUIKfLEEb3w",
+      "The Big Apple": "http://www.radiantmediatechs.com/radiant-bgphoto/img/the-big-apple.jpg",
+      "New York City Under The Snow": "http://www.radiantmediatechs.com/radiant-bgphoto/img/new-york-under-the-snow.jpg",
+   
+      "The Statue Of Liberty": "http://www.radiantmediatechs.com/radiant-bgphoto/img/statue-of-liberty.jpg",
+      "The Big Apple": "http://www.radiantmediatechs.com/radiant-bgphoto/img/the-big-apple.jpg"
+    }
+  },
+  {
+    "name": "india",
+    "links": {
+      "300x200": "http://images.solwayscuba.com/photos/hotels/CCCMEL/hotel-melia-cayo-coco-hotel_1.jpg",
+      "Broadway view": "http://www.radiantmediatechs.com/radiant-bgphoto/img/broadway.jpg",
+      "New York City Under The Snow": "http://www.radiantmediatechs.com/radiant-bgphoto/img/new-york-under-the-snow.jpg",
+      "The Statue Of Liberty": "http://www.radiantmediatechs.com/radiant-bgphoto/img/statue-of-liberty.jpg",
+      "The Big Apple": "http://www.radiantmediatechs.com/radiant-bgphoto/img/the-big-apple.jpg"
+    }
+  }
+]
