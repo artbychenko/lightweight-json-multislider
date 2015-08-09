@@ -55,7 +55,6 @@ Slider.prototype = {
         } else return name;
     },
     init: function () {
-
         var cacheThis = this;
 
         var height = this.style.height || '200px';
@@ -115,6 +114,8 @@ Slider.prototype = {
                 'height': '100%'
             });
 
+//-----------------$gallery inner block start
+
             var galleryItem = $('<div>',{
                 class: 'bg-id-' + cacheThis.index,
                 css: {
@@ -122,7 +123,7 @@ Slider.prototype = {
                     'height': '100%',
                     'overflow': 'hidden'
                 }
-            });
+            }).append(newImage);
 
             var $galleryTitleAndControl = $('<div>',{
                 class: 'gallery-title',
@@ -153,7 +154,6 @@ Slider.prototype = {
             var $leftArrow = $('<div>',{
                 class: 'gallery-left-arrow',
                 css: {
-                    'background': 'url("images/svg/prev_slide.svg") no-repeat',
                     'opacity': '0.6',
                     'transition': 'opacity 0.3s ease',
                     'position': 'absolute',
@@ -168,12 +168,11 @@ Slider.prototype = {
                 e.currentTarget.style.opacity = 1;
             },function(e){
                 e.currentTarget.style.opacity = 0.6;
-            });
+            }).append(Slider.svg.prev_slide);
 
             var $rightArrow = $('<div>',{
                class: 'gallery-right-arrow',
                 css: {
-                    'background': 'url("images/svg/next_slide.svg") no-repeat',
                     'opacity': '0.6',
                     'transition': 'opacity 0.3s ease',
                     'position': 'absolute',
@@ -188,7 +187,7 @@ Slider.prototype = {
                 e.currentTarget.style.opacity = 1;
             },function(e){
                 e.currentTarget.style.opacity = 0.6;
-            });
+            }).append(Slider.svg.next_slide);
 
             var $zoom = $('<div>',{
                class: 'gallery-zoom',
@@ -214,6 +213,10 @@ Slider.prototype = {
 
             $galleryTitleAndControl.append($title).append($leftArrow).append($rightArrow).append($zoom);
 
+            $gallery.append(galleryItem).append($galleryTitleAndControl);
+
+//-----------------$gallery inner block end
+
             var $galleryName = $('<div>',{
                 class: 'gallery-name',
                 css: {
@@ -236,21 +239,23 @@ Slider.prototype = {
 
             $galleryName.append($galleryNameItem);
 
+
+
             var $spinner = $('<div>',{
-                class: 'bg-spinner'
-            });
+                class: 'spinner',
+                css: {
+                    'position': 'absolute',
+                    'left': '50%',
+                    'top': '50%',
+                    'z-index': 1,
+                    'margin-left': '-16px',
+                    'margin-top': '-16px',
+                    'width': '32px',
+                    'height': '32px'
+                }
+            }).append(Slider.svg.icon_spin);
 
-            var $spinnerItem = $('<span>',{
-                class: 'icon-spinner bg-spin'
-            });
-
-            $spinner.append($spinnerItem);
-
-            galleryItem.append(newImage);
-
-            $gallery.append(galleryItem);
-            $gallery.append($galleryTitleAndControl);
-            $main.append($galleryName).append($spinner);
+            $main.append($galleryName);//.append($spinner);
 
             cacheThis.arrayLoaded[cacheThis.index] = true;
 
@@ -328,15 +333,12 @@ Slider.prototype = {
 
     showSpinner: function () {
         var that = this.selector;
-        $(that + ' .icon-spinner').addClass('bg-spin');
-        $(that + ' .bg-spinner').fadeIn();
+        $(that + ' .spinner').show();
     },
 
     hideSpinner: function () {
         var that = this.selector;
-        $(that + ' .bg-spinner').stop(true, true).fadeOut(function () {
-            $(that + ' .icon-spinner').removeClass('bg-spin');
-        });
+        $(that + ' .spinner').hide();
     },
 
     filterLink: function (link){
@@ -370,10 +372,10 @@ Slider.prototype = {
     switchZoomOrPlay: function (typeLink,$zoom){
         switch (typeLink){
             case 'video':
-                $zoom.addClass('play').removeClass('zoom');
+                $zoom.empty().append(Slider.svg.icon_play);
                 break;
             case 'img':
-                $zoom.addClass('zoom').removeClass('play');
+                $zoom.empty().append(Slider.svg.icon_zoom);
                 break;
         }
     },
@@ -458,8 +460,6 @@ Slider.prototype = {
                 //check type of link
                 var typeLink = cacheThis.arrayType[cacheThis.index];
 
-                // show zoom-icon background type = play or zoom
-                //$zoom.addClass('displayNot').removeClass('visible7');
                 $zoom.css({
                     'display': 'none'
                 });
@@ -604,7 +604,7 @@ Slider.prototype = {
 
                 //check type of link
                 var typeLink = cacheThis.arrayType[cacheThis.index];
-                //$zoom.addClass('displayNot').removeClass('visible7');
+
                 $zoom.css({
                     'display': 'none'
                 });
@@ -780,6 +780,147 @@ Slider.prototype = {
     }
 
 };
+Slider.svg = {
+    prev_slide:
+        [
+            '<svg version="1.1" id="_x32_0_x25__1_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"',
+            'y="0px" viewBox="-295 386 21 21" style="position: absolute; enable-background:new -295 386 21 21;" xml:space="preserve">',
+            '<style type="text/css">',
+            '.st0{fill:#FFFFFF;}',
+            '</style>',
+            '<path class="st0" d="M-295,396.5c0,5.8,4.7,10.5,10.5,10.5s10.5-4.7,10.5-10.5s-4.7-10.5-10.5-10.5S-295,390.7-295,396.5z',
+            'M-288,396.4l3.8-4.6l1.9,0.3l-3.6,4.4l3.5,4.3l-1.8,0.2L-288,396.4z"/>',
+            '</svg>'
+        ].join('\n'),
+    next_slide:
+        [
+            '<svg version="1.1" id="_x32_0_x25__1_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"',
+            'y="0px" viewBox="-295 386 21 21" style="position: absolute; enable-background:new -295 386 21 21;" xml:space="preserve">',
+            '<style type="text/css">',
+            '.st0{fill:#FFFFFF;}',
+            '</style>',
+            '<path class="st0" d="M-284.5,386c-5.8,0-10.5,4.7-10.5,10.5s4.7,10.5,10.5,10.5s10.5-4.7,10.5-10.5S-278.8,386-284.5,386z',
+            'M-284.8,401l-1.9-0.3l3.5-4.3l-3.7-4.3l1.9-0.3l3.8,4.6L-284.8,401z"/>',
+            '</svg>'
+        ].join('\n'),
+    icon_play:
+        [
+            '<svg version="1.1" id="icon_x5F_video_x5F_no_x5F_hover_x5F_effect_1_"',
+            'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-284 376 42 42"',
+            'style="position: absolute; enable-background:new -284 376 42 42;" xml:space="preserve">',
+            '<style type="text/css">',
+            '.st0{fill:#FFFFFF;}',
+            '</style>',
+            '<path class="st0" d="M-263,376c-11.6,0-21,9.4-21,21s9.4,21,21,21s21-9.4,21-21S-251.4,376-263,376z M-267,405v-15.9l12,8L-267,405z"/>',
+            '</svg>'
+        ].join('\n'),
+    icon_zoom:
+        [
+            '<svg version="1.1" id="icon_x5F_image_x5F_no_x5F_hover_1_"',
+            'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-284 376 42 42"',
+            'style="position: absolute; enable-background:new -284 376 42 42;" xml:space="preserve">',
+            '<style type="text/css">',
+            '.st0{fill:#FFFFFF;}',
+            '</style>',
+            '<g id="icon_x5F_image_x5F_no_x5F_hover">',
+            '<g>',
+            '<path class="st0" d="M-264,391c-2.8,0-5,2.3-5,5c0,2.8,2.3,5,5,5c2.8,0,5-2.3,5-5C-259,393.2-261.2,391-264,391z M-263,376',
+            'c-11.6,0-21,9.4-21,21s9.4,21,21,21s21-9.4,21-21S-251.4,376-263,376z M-254,406h-1.6l-4.3-4.2c-1.2,0.8-2.6,1.3-4.1,1.3',
+            'c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7c0,1.5-0.5,2.9-1.3,4.1l4.3,4.2V406z"/>',
+            '</g>',
+            '</g>',
+            '</svg>'
+        ].join('\n'),
+    icon_close:
+        [
+            '<svg version="1.1" id="icon_x5F_close_x5F_hover_1_"',
+            'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-291 383 28 28"',
+            'style="position: absolute; enable-background:new -291 383 28 28;" xml:space="preserve">',
+            '<style type="text/css">',
+            '.st0{fill:#FFFFFF;}',
+            '</style>',
+            '<g id="icon_x5F_close_x5F_hover">',
+            '<g>',
+            '<path class="st0" d="M-277,383c-7.7,0-14,6.3-14,14s6.3,14,14,14s14-6.3,14-14S-269.3,383-277,383z M-270.9,401.5l-0.3,1.3',
+            'l-1.3,0.3l-4.5-4.5l-4.4,4.5l-1.4-0.3l-0.3-1.3l4.5-4.5l-4.4-4.5l0.2-1.3l1.4-0.3l4.5,4.4l4.5-4.4l1.3,0.3l0.3,1.3l-4.6,4.5',
+            'L-270.9,401.5z"/>',
+            '</g>',
+            '</g>',
+            '</svg>'
+        ].join('\n'),
+    icon_spin:
+        [
+            '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"',
+            'viewBox="-289 381 32 32" style="position: absolute; enable-background:new -289 381 32 32;" xml:space="preserve">',
+            '<style type="text/css">',
+            '.st0{fill:none;}',
+            '.st1{fill:#00B2FF;}',
+            '</style>',
+            '<rect x="-289" y="381" class="st0" width="32" height="32"/>',
+            '<path class="st1" d="M-273,384.2L-273,384.2c0.6,0,1.1,0.7,1.1,1.6v3.2c0,0.9-0.5,1.6-1.1,1.6l0,0c-0.6,0-1.1-0.7-1.1-1.6v-3.2',
+            'C-274.1,384.9-273.6,384.2-273,384.2z">',
+            '<animate  fill="remove" begin="0s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-266.6,385.9L-266.6,385.9c0.5,0.3,0.6,1.2,0.2,1.9l-1.6,2.8c-0.4,0.8-1.2,1.1-1.8,0.8l0,0',
+            'c-0.5-0.3-0.6-1.2-0.2-1.9l1.6-2.8C-267.9,386-267.1,385.6-266.6,385.9z">',
+            '<animate  fill="remove" begin="0.08333333333333333s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-261.9,390.6L-261.9,390.6c0.3,0.5-0.1,1.3-0.8,1.8l-2.8,1.6c-0.8,0.4-1.6,0.4-1.9-0.2l0,0',
+            'c-0.3-0.5,0.1-1.3,0.8-1.8l2.8-1.6C-263.1,390-262.2,390.1-261.9,390.6z">',
+            '<animate  fill="remove" begin="0.16666666666666666s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-260.2,397L-260.2,397c0,0.6-0.7,1.1-1.6,1.1h-3.2c-0.9,0-1.6-0.5-1.6-1.1l0,0c0-0.6,0.7-1.1,1.6-1.1h3.2',
+            'C-260.9,395.9-260.2,396.4-260.2,397z">',
+            '<animate  fill="remove" begin="0.25s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-261.9,403.4L-261.9,403.4c-0.3,0.5-1.2,0.6-1.9,0.2l-2.8-1.6c-0.8-0.4-1.1-1.2-0.8-1.8l0,0',
+            'c0.3-0.5,1.2-0.6,1.9-0.2l2.8,1.6C-262,402.1-261.6,402.9-261.9,403.4z">',
+            '<animate  fill="remove" begin="0.3333333333333333s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-266.6,408.1L-266.6,408.1c-0.5,0.3-1.3-0.1-1.8-0.8l-1.6-2.8c-0.4-0.8-0.4-1.6,0.2-1.9l0,0',
+            'c0.5-0.3,1.3,0.1,1.8,0.8l1.6,2.8C-266,406.9-266.1,407.8-266.6,408.1z">',
+            '<animate  fill="remove" begin="0.4166666666666667s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-273,409.8L-273,409.8c-0.6,0-1.1-0.7-1.1-1.6V405c0-0.9,0.5-1.6,1.1-1.6l0,0c0.6,0,1.1,0.7,1.1,1.6v3.2',
+            'C-271.9,409.1-272.4,409.8-273,409.8z">',
+            '<animate  fill="remove" begin="0.5s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-279.4,408.1L-279.4,408.1c-0.5-0.3-0.6-1.2-0.2-1.9l1.6-2.8c0.4-0.8,1.2-1.1,1.8-0.8l0,0',
+            'c0.5,0.3,0.6,1.2,0.2,1.9l-1.6,2.8C-278.1,408-278.9,408.4-279.4,408.1z">',
+            '<animate  fill="remove" begin="0.5833333333333334s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-284.1,403.4L-284.1,403.4c-0.3-0.5,0.1-1.3,0.8-1.8l2.8-1.6c0.8-0.4,1.6-0.4,1.9,0.2l0,0',
+            'c0.3,0.5-0.1,1.3-0.8,1.8l-2.8,1.6C-282.9,404-283.8,403.9-284.1,403.4z">',
+            '<animate  fill="remove" begin="0.6666666666666666s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-285.8,397L-285.8,397c0-0.6,0.7-1.1,1.6-1.1h3.2c0.9,0,1.6,0.5,1.6,1.1l0,0c0,0.6-0.7,1.1-1.6,1.1h-3.2',
+            'C-285.1,398.1-285.8,397.6-285.8,397z">',
+            '<animate  fill="remove" begin="0.75s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-284.1,390.6L-284.1,390.6c0.3-0.5,1.2-0.6,1.9-0.2l2.8,1.6c0.8,0.4,1.1,1.2,0.8,1.8l0,0',
+            'c-0.3,0.5-1.2,0.6-1.9,0.2l-2.8-1.6C-284,391.9-284.4,391.1-284.1,390.6z">',
+            '<animate  fill="remove" begin="0.8333333333333334s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '<path class="st1" d="M-279.4,385.9L-279.4,385.9c0.5-0.3,1.3,0.1,1.8,0.8l1.6,2.8c0.4,0.8,0.4,1.6-0.2,1.9l0,0',
+            'c-0.5,0.3-1.3-0.1-1.8-0.8l-1.6-2.8C-280,387.1-279.9,386.2-279.4,385.9z">',
+            '<animate  fill="remove" begin="0.9166666666666666s" to="0" from="1" repeatCount="indefinite" restart="always" calcMode="linear" accumulate="none" additive="replace" dur="1s" attributeName="opacity">',
+            '</animate>',
+            '</path>',
+            '</svg>'
+        ].join('\n')
+};
 
 Slider.gallery =[];
+
 module.exports = Slider;
