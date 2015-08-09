@@ -1,4 +1,4 @@
-//  <section id = "images_container">
+//  <section id = "images-container">
 //      <article class="country countries"> one big block here
 //          <h1 class="gallery-bg">latin</h1>
 //      </article>
@@ -6,22 +6,24 @@
 //          <h1 class="gallery-bg">russia</h1>
 //      </article>
 
-function Slider(container,bgDataArray) {
-    this.arrayPicture = [];
+function Slider(container,data) { this.arrayPicture = [];
     this.arrayType = [];
     this.arrayTitle = [];
     this.arrayLoaded = [];
     this.arrayError = [];
     this.index = 0;
     this.container = container;
-    this.id = this.addInnerCountrySeparator(bgDataArray['name']);
-    var selector = this.selector ='#'+ this.id;
-    this.country = this.prepareCountryName(selector);
+    this.id = this.addInnerSeparatorAndUniqNumber(data['name']);
+    this.selector ='#'+ this.id;
+    this.itemName = this.prepareName(data['name']);
+    this.style = data['style'] || {};
+    this.links = data['links'] || {};
+
     var setupIndex = 0;
     var filterLink = [];
-    var bgDataArray = bgDataArray['links'];
-    for (var key in bgDataArray) {
-        filterLink = this.filterLink(bgDataArray[key]);
+    var data = this.links;
+    for (var key in data) {
+        filterLink = this.filterLink(data[key]);
         this.arrayType[setupIndex] = filterLink[0];
         this.arrayPicture[setupIndex] = filterLink[1];
         this.arrayTitle[setupIndex] = key;
@@ -32,25 +34,66 @@ function Slider(container,bgDataArray) {
 
 Slider.prototype = {
     constructor: Slider,
-    prepareCountryName: function(country){
-        var words = country.slice(1).split('_');
+    prepareName: function(name){
+        if (!name) {
+            return '';
+        }
+        var words = name.trim().toLowerCase().split(' ');
         for (var i = 0; i < words.length; i++){
             words[i] = words[i].slice(0,1).toUpperCase()+words[i].slice(1);
         }
         return words.join(' ');
     },
-    addInnerCountrySeparator: function(country){
-        country = country.trim().toLowerCase();
-        var words = country.split(' ');
+    addInnerSeparatorAndUniqNumber: function(name){
+        var id = Math.round(Math.random()*10000);
+        if (!name){
+            return id;
+        }
+        var words = name.trim().toLowerCase().split(' ');
         if (words.length > 1) {
             return words.join('_');
-        } else return country;
+        } else return name;
     },
     init: function () {
+
         var cacheThis = this;
-        
-        var $main =$('<article class="country body-bg-img" id =' + cacheThis.id + '>');
-        var $gallery = $('<h1 class="gallery-bg">');
+
+        var height = this.style.height || '200px';
+        var width = this.style.width || '300px';
+
+        var minSize = this.minSize = (parseInt(height) > parseInt(width))? parseInt(width): parseInt(height);
+
+        var cssItemContainer = $.extend({
+            'position': 'relative',
+            'float': 'left',
+            'width': width,
+            'height': height,
+            'background': '#282a2d',
+            'color': '#ffffff',
+            'line-height': height,
+            'text-align': 'center',
+            'overflow': 'hidden'
+        },this.style);
+
+        var $main =$('<article>',{
+            class: 'item-container',
+            id: cacheThis.id,
+            css: cssItemContainer
+        });
+
+        var $gallery = $('<div>',{
+            class: 'gallery-bg',
+            css: {
+                'display': 'block',
+                'margin': 0,
+                'padding': 0,
+                'width': '100%',
+                'height': '100%',
+                'background': '#282a2d',
+                'opacity': '0',
+                'transition': 'opacity 0.3s linear'
+            }
+        });
         
         $main.append($gallery);
         
@@ -64,26 +107,190 @@ Slider.prototype = {
                 'data-height': newImage.height,
                 'alt': cacheThis.arrayTitle[cacheThis.index],
                 'class': 'gallery-bg-img'
+            }).css({
+                'margin': 0,
+                'padding': 0,
+                'max-height': '100%',
+                'width': '100%',
+                'height': '100%'
             });
-            var initialAppend = $('<div class = "bg-id-' + cacheThis.index + '">');
 
-            var nextElements ='<div class="gallery-title">' +
-                '<span class="title-name visibleNot">' + cacheThis.arrayTitle[cacheThis.index] + '</span>' +
-                '<div class="gallery-left-arrow"></div>' +
-                '<div class="gallery-right-arrow"></div>'+
-                '<div class="gallery-zoom displayNot"></div>'+
-                '</div>';
+            var galleryItem = $('<div>',{
+                class: 'bg-id-' + cacheThis.index,
+                css: {
+                    'width': '100%',
+                    'height': '100%',
+                    'overflow': 'hidden'
+                }
+            });
 
-            var nameAndSpinner = '<div class="gallery-name"><span class="name">'+cacheThis.country+'</span></div>';
-            nameAndSpinner += '<div class="bg-spinner"><span class="icon-spinner bg-spin"></span></div>';
+            var $galleryTitleAndControl = $('<div>',{
+                class: 'gallery-title',
+                css: {
+                    'position': 'relative',
+                    'margin-top': '-'+height,
+                    'height': height,
+                    'width': width,
+                    'text-align': 'left'
+                }
+            });
 
-            initialAppend.append(newImage);
+            var $title = $('<span>',{
+                class: 'title-name',
+                css: {
+                    'opacity': 0,
+                    'transition': 'opacity 0.3s linear',
+                    'display': 'block',
+                    'position':'absolute',
+                    'bottom': minSize/15+'px',
+                    'left': minSize/15+'px',
+                    'width': '60%',
+                    'color': '#fdfdfd',
+                    'font': minSize/10 + 'px' + ' Georgia, serif'
+                }
+            }).text(cacheThis.arrayTitle[cacheThis.index]);
 
-            $gallery.hide().append(initialAppend);
-            $gallery.append(nextElements);
-            $main.append(nameAndSpinner);
+            var $leftArrow = $('<div>',{
+                class: 'gallery-left-arrow',
+                css: {
+                    'background': 'url("images/svg/prev_slide.svg") no-repeat',
+                    'opacity': '0.6',
+                    'transition': 'opacity 0.3s ease',
+                    'position': 'absolute',
+                    'bottom': minSize/15+'px',
+                    'right': minSize/4.5 +'px',
+                    'width': minSize/10+'px',
+                    'height': minSize/10+'px',
+                    'cursor': 'pointer',
+                    'z-index': 1
+                }
+            }).hover(function(e){
+                e.currentTarget.style.opacity = 1;
+            },function(e){
+                e.currentTarget.style.opacity = 0.6;
+            });
+
+            var $rightArrow = $('<div>',{
+               class: 'gallery-right-arrow',
+                css: {
+                    'background': 'url("images/svg/next_slide.svg") no-repeat',
+                    'opacity': '0.6',
+                    'transition': 'opacity 0.3s ease',
+                    'position': 'absolute',
+                    'bottom': minSize/15+'px',
+                    'right': minSize/15+'px',
+                    'width': minSize/10+'px',
+                    'height': minSize/10+'px',
+                    'cursor': 'pointer',
+                    'z-index': 1
+                }
+            }).hover(function(e){
+                e.currentTarget.style.opacity = 1;
+            },function(e){
+                e.currentTarget.style.opacity = 0.6;
+            });
+
+            var $zoom = $('<div>',{
+               class: 'gallery-zoom',
+                css: {
+                    'display': 'none',
+                    'opacity': 0,
+                    'transition': 'opacity 0.3s ease',
+                    'position': 'absolute',
+                    'top': '50%',
+                    'left': '50%',
+                    'margin-left': -minSize/12 +'px',
+                    'margin-top': -minSize/12 +'px',
+                    'width': minSize/6+'px',
+                    'height': minSize/6+'px',
+                    'cursor': 'pointer',
+                    'z-index': 1
+                }
+            }).hover(function(e){
+                e.currentTarget.style.opacity = 1;
+            },function(e){
+                e.currentTarget.style.opacity = 0.6;
+            });
+
+            $galleryTitleAndControl.append($title).append($leftArrow).append($rightArrow).append($zoom);
+
+            var $galleryName = $('<div>',{
+                class: 'gallery-name',
+                css: {
+                    'font': minSize/6 +'px Georgia, serif',
+                    'transition': 'opacity 0.3s linear',
+                    'color': '#ffffff',
+                    'position': 'absolute',
+                    'top': '50%',
+                    'margin-top': -minSize/12 +'px',
+                    'width': '100%',
+                    'height':  minSize/6 +'px',
+                    'text-align': 'center',
+                    'line-height':  minSize/6 +'px'
+                }
+            });
+
+            var $galleryNameItem = $('<span>',{
+                class: 'name'
+            }).text(cacheThis.itemName);
+
+            $galleryName.append($galleryNameItem);
+
+            var $spinner = $('<div>',{
+                class: 'bg-spinner'
+            });
+
+            var $spinnerItem = $('<span>',{
+                class: 'icon-spinner bg-spin'
+            });
+
+            $spinner.append($spinnerItem);
+
+            galleryItem.append(newImage);
+
+            $gallery.append(galleryItem);
+            $gallery.append($galleryTitleAndControl);
+            $main.append($galleryName).append($spinner);
 
             cacheThis.arrayLoaded[cacheThis.index] = true;
+
+            $main.hover(function(){
+                $gallery.css({
+                    'opacity': 1
+                });
+                $title.css({
+                    'opacity': 1
+                });
+                $zoom.css({
+                    'opacity': 0.6
+                });
+                $galleryName.css({
+                    'opacity': 0
+                });
+                setTimeout(function(){
+                    $galleryName.css({
+                       'display': 'none'
+                    });
+                },300);
+            },function(){
+                $gallery.css({
+                    'opacity': 0.7
+                });
+                $title.css({
+                    'opacity': 0
+                });
+                $zoom.css({
+                    'opacity': 0
+                });
+                $galleryName.css({
+                    'opacity': 1
+                });
+                setTimeout(function(){
+                    $galleryName.css({
+                        'display': 'block'
+                    });
+                },300);
+            });
 
             cacheThis.afterLoad();
 
@@ -100,13 +307,17 @@ Slider.prototype = {
 
     afterLoad: function () {
         var that = this.selector;
-        $(that + ' .gallery-bg').fadeIn();
+        $(that + ' .gallery-bg').css({
+            'opacity': 0.7
+        });
         this.hideSpinner();
         var $zoom = $(that + ' .gallery-zoom');
         var $img = $(that + ' .gallery-bg-img');
 
         if (this.checkImageSize($img)) {
-            $zoom.removeClass('displayNot');
+            $zoom.css({
+                'display': 'block'
+            });
         } else {
         }
 
@@ -208,7 +419,10 @@ Slider.prototype = {
                     var $img = $(' .gallery-bg-img', $new);
 
                     if (cacheThis.checkImageSize($img)) {
-                        $zoom.addClass('visible7').removeClass('displayNot');
+                        $zoom.css({
+                            'opacity': 0.7,
+                            'display': 'block'
+                        });
                     }
                 }, 600);
 
@@ -245,12 +459,22 @@ Slider.prototype = {
                 var typeLink = cacheThis.arrayType[cacheThis.index];
 
                 // show zoom-icon background type = play or zoom
-                $zoom.addClass('displayNot').removeClass('visible7');
+                //$zoom.addClass('displayNot').removeClass('visible7');
+                $zoom.css({
+                    'display': 'none'
+                });
                 cacheThis.switchZoomOrPlay(typeLink,$zoom);
 
                 if (!$(that + ' .bg-id-' + cacheThis.index).length) {
 
-                    var initialAppend = $('<div class = "bg-id-' + cacheThis.index + '">');
+                    var initialAppend = $('<div>',{
+                        class: 'bg-id-' + cacheThis.index,
+                        css: {
+                            'width': '100%',
+                            'height': '100%',
+                            'overflow': 'hidden'
+                        }
+                    });
 
                     if (typeLink !== 'text') {
 
@@ -265,6 +489,12 @@ Slider.prototype = {
                                 'data-height': newImg.height,
                                 'alt': cacheThis.arrayTitle[cacheThis.index],
                                 'class': 'gallery-bg-img'
+                            }).css({
+                                'margin': 0,
+                                'padding': 0,
+                                'max-height': '100%',
+                                'width': '100%',
+                                'height': '100%'
                             });
                             initialAppend.append(newImg);
                             $(that + ' .gallery-bg').prepend(initialAppend);
@@ -286,8 +516,19 @@ Slider.prototype = {
                     } else {
                         cacheThis.hideSpinner();
                         cacheThis.arrayLoaded[cacheThis.index] = true;
-                        $('<span class ="gallery-bg-text">' +
-                            cacheThis.arrayPicture[cacheThis.index]+'</span>').appendTo(initialAppend);
+
+                        $('<span>',{
+                            class: 'gallery-bg-text',
+                            css: {
+                                'display': 'block',
+                                'overflow': 'hidden',
+                                'width': 'auto',
+                                'margin': cacheThis.minSize/14 + 'px '+cacheThis.minSize/20 + 'px',
+                                'text-align': 'left',
+                                'font': cacheThis.minSize/14 + 'px Verdana, monospace'
+                            }
+                        }).text(cacheThis.arrayPicture[cacheThis.index]).appendTo(initialAppend);
+
                         $(that + ' .gallery-bg').prepend(initialAppend);
                         _pushLeft();
                     }
@@ -325,7 +566,10 @@ Slider.prototype = {
                     var $img = $(' .gallery-bg-img', $new);
 
                     if (cacheThis.checkImageSize($img)) {
-                        $zoom.addClass('visible7').removeClass('displayNot');
+                        $zoom.css({
+                            'opacity': 0.7,
+                            'display': 'block'
+                        });
                     }
                 }, 500);
 
@@ -360,12 +604,23 @@ Slider.prototype = {
 
                 //check type of link
                 var typeLink = cacheThis.arrayType[cacheThis.index];
-                $zoom.addClass('displayNot').removeClass('visible7');
+                //$zoom.addClass('displayNot').removeClass('visible7');
+                $zoom.css({
+                    'display': 'none'
+                });
+
                 cacheThis.switchZoomOrPlay(typeLink,$zoom);
 
                 if (!$(that + ' .bg-id-' + cacheThis.index).length) {
 
-                    var initialAppend = $('<div class = "bg-id-' + cacheThis.index + '">');
+                    var initialAppend = $('<div>',{
+                        class: 'bg-id-' + cacheThis.index,
+                        css: {
+                            'width': '100%',
+                            'height': '100%',
+                            'overflow': 'hidden'
+                        }
+                    });
 
                     if (typeLink !== 'text') {
                         var newImg = new Image();
@@ -379,6 +634,12 @@ Slider.prototype = {
                                 'data-height': newImg.height,
                                 'alt': cacheThis.arrayTitle[cacheThis.index],
                                 'class': 'gallery-bg-img'
+                            }).css({
+                                'margin': 0,
+                                'padding': 0,
+                                'max-height': '100%',
+                                'width': '100%',
+                                'height': '100%'
                             });
                             initialAppend.append(newImg);
                             $(that + ' .gallery-bg').prepend(initialAppend);
@@ -401,8 +662,19 @@ Slider.prototype = {
                     } else {
                         cacheThis.hideSpinner();
                         cacheThis.arrayLoaded[cacheThis.index] = true;
-                        $('<span class ="gallery-bg-text">' +
-                            cacheThis.arrayPicture[cacheThis.index]+'</span>').appendTo(initialAppend);
+
+                        $('<span>',{
+                            class: 'gallery-bg-text',
+                            css: {
+                                'display': 'block',
+                                'overflow': 'hidden',
+                                'width': 'auto',
+                                'margin': cacheThis.minSize/14 + 'px '+cacheThis.minSize/20 + 'px',
+                                'text-align': 'left',
+                                'font': cacheThis.minSize/14 + 'px Verdana, monospace'
+                            }
+                        }).text(cacheThis.arrayPicture[cacheThis.index]).appendTo(initialAppend);
+
                         $(that + ' .gallery-bg').prepend(initialAppend);
                         _pushRight();
                     }
